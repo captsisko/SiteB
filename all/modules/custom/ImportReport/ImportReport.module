@@ -1,0 +1,55 @@
+<?php
+	
+	function ImportReport_init(){
+		// drupal_set_message('Import-Report responding!');
+	}
+
+	/*	
+		this hook failed to deliver 
+		any data from the $source variable
+	*/
+	function ImportReport_feeds_after_import(FeedsSource $source){
+		/*drupal_set_message('Import detected!', 'warning');
+		if(module_exists('devel'))
+			dsm($source, '[AFTER IMPORT] Import-Report Data');*/
+	}
+
+	function ImportReport_feeds_after_parse(FeedsSource $source, FeedsParserResult $result){
+		if(module_exists('devel')){
+			dsm($source, '[SOURCE AFTER PARSE] Import-Report source Data');
+			dsm($result, '[RESULT AFTER PARSE] Import-Report result Data');
+
+			// dsm($result->items, 'RESULTS ARRAY');
+			drupal_set_message("Imported <u>".sizeof($result->items)."</u> from {$result->link}");
+			// variable_set('import_report', "Successfully imported <u>".sizeof($result->items)."</u> node(s) from " . l('this source', $result->link) );
+			variable_set('import_report', "Successfully imported node(s) from " . l('this source', $result->link) );
+		}
+	}
+
+	/**
+	* Implements hook_block_info().
+	*/
+	function ImportReport_block_info() {
+	  $blocks = array();
+	  $blocks['import_report'] = array(
+	    'info' => t('Import-Report'),
+	  );
+	  return $blocks;
+	}
+	/**
+	* Implements hook_block_view().
+	*/
+	function ImportReport_block_view($delta = '') {
+	  $block = array();
+	  switch ($delta) {
+	    case 'import_report':
+	      $block['subject'] = 'Import Report';
+	      $block['content'] = _import_report_variable_content();
+	      break;
+	  }
+	  return $block;
+	}
+	function _import_report_variable_content() {
+	  $output = variable_get('import_report');
+	  return $output;
+	}

@@ -1,0 +1,5 @@
+name = Imports Report
+description = displays a custom block which contains a report of recent Feed import activity
+package = Custom
+core = 7.x
+dependencies[] = feeds
